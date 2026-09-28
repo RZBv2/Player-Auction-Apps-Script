@@ -1,0 +1,107 @@
+<!doctype html>
+<html>
+<head>
+  <base target="_top">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <style>
+    *{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#eef2f7;color:#0f172a}.header{background:#0f172a;color:#fff;text-align:center;padding:22px}.header h1{margin:0 0 7px;font-size:25px}.header p{margin:0;color:#cbd5e1}.container{max-width:1000px;margin:25px auto;padding:0 16px}.toolbar,.auction-card,.all-players{background:#fff;border-radius:16px;box-shadow:0 5px 18px #0002}.toolbar{padding:15px;margin-bottom:18px;display:flex;gap:8px;align-items:center;justify-content:space-between;flex-wrap:wrap}.counter{font-weight:bold;color:#475569}.auction-card{overflow:hidden;border:4px solid #2563eb;display:grid;grid-template-columns:minmax(300px,44%) 1fr;align-items:stretch}.photo,.no-photo{display:block;width:100%;height:360px;object-fit:contain;object-position:center;background:#e2e8f0}.auction-card>.photo,.auction-card>.no-photo{height:100%;min-height:520px}.no-photo{display:flex;align-items:center;justify-content:center;color:#475569;font-size:20px}.content{padding:24px}.player-name{font-size:31px;font-weight:700;margin-bottom:10px}.position{display:inline-block;background:#dbeafe;color:#1d4ed8;padding:7px 12px;border-radius:999px;font-size:14px;font-weight:bold}.details{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:18px 0;color:#475569}.details strong{color:#0f172a}.price-box{background:#f8fafc;border-radius:12px;padding:16px;margin:18px 0}.price-row{display:flex;justify-content:space-between;margin:6px 0}.current-bid{font-size:32px;color:#dc2626;font-weight:700}.status{font-weight:bold;color:#2563eb}.live .status{color:#d97706}.sold .status{color:#15803d}.input{width:100%;padding:12px;margin:5px 0;border:1px solid #cbd5e1;border-radius:8px;font-size:15px}.button{border:0;border-radius:8px;padding:12px 16px;margin:4px 2px;cursor:pointer;font-weight:bold;font-size:14px}.primary{background:#2563eb;color:#fff}.success{background:#16a34a;color:#fff}.warning{background:#f59e0b;color:#fff}.danger{background:#dc2626;color:#fff}.secondary{background:#64748b;color:#fff}.button:disabled{opacity:.5;cursor:not-allowed}.message{display:none;padding:12px;border-radius:8px;margin-bottom:15px}.message.success-message{display:block;background:#dcfce7;color:#166534}.message.error-message{display:block;background:#fee2e2;color:#991b1b}.winner{background:#dcfce7;color:#166534;padding:14px;border-radius:9px;font-weight:bold;margin:12px 0}.empty{background:#fff;border-radius:16px;padding:35px;text-align:center;box-shadow:0 5px 18px #0002}.help{color:#64748b;font-size:13px;margin-top:12px}.all-players{display:none;padding:20px;margin-top:20px}.all-players h2{margin-top:0}.player-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}.player-item{border:1px solid #cbd5e1;border-radius:10px;overflow:hidden;background:#f8fafc}.player-item img,.player-item .no-photo{height:180px;width:100%;object-fit:contain;object-position:center;background:#e2e8f0}.player-item-body{padding:12px}.player-item-name{font-weight:bold;font-size:17px}.player-item-status{font-size:13px;margin-top:5px;color:#475569}.player-item-status.sold{color:#15803d;font-weight:bold}@media(max-width:600px){.auction-card{display:block}.auction-card>.photo,.auction-card>.no-photo{height:270px;min-height:270px}.photo,.no-photo{height:270px}.player-name{font-size:25px}.details{grid-template-columns:1fr}.toolbar{align-items:stretch}.toolbar button{width:100%}} .dashboard-table{width:100%;border-collapse:collapse;margin-top:16px;background:#fff}.dashboard-table th,.dashboard-table td{border:1px solid #cbd5e1;padding:11px 10px;text-align:left;font-size:14px}.dashboard-table th{background:#e2e8f0;color:#0f172a}.dashboard-table tr:nth-child(even){background:#f8fafc}.positive{color:#15803d;font-weight:bold}.negative{color:#dc2626;font-weight:bold}.table-wrap{overflow-x:auto}
+  
+   .card-credit{margin-top:10px;padding-top:8px;border-top:1px solid #e2e8f0;text-align:right;font-size:11px;color:#94a3b8}.card-credit strong{color:#64748b;font-weight:600}
+   .photo-wrap{position:relative;width:100%;overflow:hidden;background:#e2e8f0}.photo-wrap img,.photo-wrap .photo{position:absolute;inset:0;width:100%;height:100%;min-height:0;object-fit:cover;object-position:center top;display:block}.photo-wrap .no-photo{position:absolute;inset:0;width:100%;height:100%;min-height:0}.auction-card>.photo-wrap{aspect-ratio:3/4;align-self:start}.player-item .photo-wrap{aspect-ratio:3/4;height:auto}@media(max-width:600px){.auction-card>.photo-wrap{aspect-ratio:1/1}}
+  </style>
+</head>
+<body>
+  <header class="header"><h1>Computer Society, NBIU</h1><p>Football Players Auction 2026</p></header>
+  <main class="container">
+    <div id="message" class="message"></div>
+    <div class="toolbar"><div class="counter" id="counter">Loading players...</div><div><button class="button secondary" onclick="loadPlayers()">Refresh</button><button class="button secondary" onclick="toggleAllPlayers()">All Players</button><button class="button secondary" onclick="toggleHistory()">Auction History</button><button class="button secondary" onclick="toggleBudgets()">Team Budgets</button><button class="button primary" id="nextButton" onclick="nextRandomPlayer()">Next Random Player</button></div></div>
+    <div id="auctionArea"></div>
+    <section id="allPlayers" class="all-players"><h2>All Football Players</h2><div id="playerList" class="player-list"></div></section>
+    <section id="historyPanel" class="all-players"><h2>Sold Players and Auction History</h2><button class="button success" onclick="downloadAuctionHistory()">Download Auction History CSV</button><div id="historyList" class="table-wrap"></div></section>
+    <section id="budgetPanel" class="all-players"><h2>Team Budget Dashboard</h2><div><input class="input" id="teamName" placeholder="Team name"><input class="input" id="teamBudget" type="number" placeholder="Initial budget"><button class="button primary" onclick="saveTeamBudget()">Save Team Budget</button></div><div id="budgetList" class="table-wrap"></div></section>
+  </main>
+  <script>
+    let players=[];
+    let currentPlayer=null;
+    let shownIds=[];
+    window.onload=loadPlayers;
+
+    function loadPlayers(){
+      google.script.run.withSuccessHandler(data=>{
+        players=data||[];
+        shownIds=[];
+        currentPlayer=null;
+        renderAllPlayers();
+        loadSummary();
+        nextRandomPlayer();
+      }).withFailureHandler(showError).getAuctionPlayers();
+    }
+
+    function nextRandomPlayer(){
+      const available=players.filter(player=>player.auctionStatus!=='Sold'&&!shownIds.includes(player.playerId));
+      const pool=available.length?available:players.filter(player=>player.auctionStatus!=='Sold');
+      if(!pool.length){currentPlayer=null;renderEmpty('No unsold football players are available.');return;}
+      currentPlayer=pool[Math.floor(Math.random()*pool.length)];
+      if(!shownIds.includes(currentPlayer.playerId)) shownIds.push(currentPlayer.playerId);
+      renderPlayer();
+    }
+
+    function renderPlayer(){
+      if(!currentPlayer)return;
+      const player=currentPlayer,status=player.auctionStatus||'Not Started';
+      const photo='<div class="photo-wrap">'+(player.photo?'<img class="photo" src="'+escapeHtml(player.photo)+'" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'">':'')+'<div class="no-photo" style="display:'+(player.photo?'none':'flex')+'">No photo available</div></div>';
+      let controls='';
+      if(status==='Not Started') controls='<input class="input" id="basePrice" type="number" placeholder="Enter base price"><button class="button primary" onclick="saveBasePrice()">Save Base Price</button>';
+      if(status==='Ready') controls='<button class="button warning" onclick="startAuction()">Start Auction (Live)</button><button class="button danger" onclick="resetCurrentAuction()">Reset</button>';
+      if(status==='Live') controls='<div style="background:#fef3c7;padding:14px;border-radius:10px;margin:10px 0"><strong>Auction is Live!</strong><br><small>Verbal bidding in progress. After bidding ends, enter the final price and team name below.</small></div><input class="input" id="finalPrice" type="number" placeholder="Final price (winning bid)"><input class="input" id="teamNameInput" placeholder="Team name (winner)"><button class="button success" onclick="closeAuctionManual()">Close Auction & Save</button><button class="button danger" onclick="resetCurrentAuction()">Reset Auction</button>';
+      if(status==='Sold') controls='<div class="winner">Winner: '+escapeHtml(player.winner||'')+'<br>Final Price: '+escapeHtml(player.finalPrice||'')+'</div><button class="button warning" onclick="resetCurrentAuction()">Return to Auction</button><button class="button secondary" onclick="nextRandomPlayer()">Next Player</button>';
+      document.getElementById('counter').textContent='Player '+(shownIds.indexOf(player.playerId)+1)+' of '+players.length;
+      document.getElementById('nextButton').disabled=status==='Live';
+      document.getElementById('auctionArea').innerHTML='<section class="auction-card '+status.toLowerCase()+'">'+photo+'<div class="content"><div class="player-name">'+escapeHtml(player.name)+'</div><div class="position">'+escapeHtml(player.position)+'</div><div class="details"><div><strong>Department:</strong><br>'+escapeHtml(player.department)+'</div><div><strong>Batch:</strong><br>'+escapeHtml(player.batch)+'</div><div><strong>Student ID:</strong><br>'+escapeHtml(player.studentId)+'</div><div><strong>Contact:</strong><br>'+escapeHtml(player.contactNumber)+'</div></div><div class="price-box"><div class="price-row"><span>Base Price</span><strong>'+escapeHtml(player.basePrice||'-')+'</strong></div><div class="price-row"><span>Current Bid</span><strong class="current-bid">'+escapeHtml(player.currentBid||player.basePrice||'-')+'</strong></div><div class="price-row"><span>Status</span><strong class="status">'+escapeHtml(status)+'</strong></div>'+(player.bidderName?'<div class="price-row"><span>Current Bidder</span><strong>'+escapeHtml(player.bidderName)+'</strong></div>':'')+'</div>'+controls+'<div class="card-credit">Built by <strong>RZBv2</strong></div></div></section>';
+    }
+
+    function renderEmpty(text){document.getElementById('counter').textContent='Auction complete';document.getElementById('nextButton').disabled=true;document.getElementById('auctionArea').innerHTML='<div class="empty"><h2>'+escapeHtml(text)+'</h2><button class="button secondary" onclick="loadPlayers()">Refresh Player List</button></div>'}
+    function toggleAllPlayers(){const list=document.getElementById('allPlayers');list.style.display=list.style.display==='block'?'none':'block';if(list.style.display==='block')renderAllPlayers()}
+    function renderAllPlayers(){const list=document.getElementById('playerList');if(!list)return;list.innerHTML=players.length?players.map(player=>{const image='<div class="photo-wrap tile-photo">'+(player.photo?'<img src="'+escapeHtml(player.photo)+'" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'">':'')+'<div class="no-photo" style="display:'+(player.photo?'none':'flex')+'">No photo available</div></div>';return '<div class="player-item">'+image+'<div class="player-item-body"><div class="player-item-name">'+escapeHtml(player.name)+'</div><div>'+escapeHtml(player.position)+'</div><div class="player-item-status '+(player.auctionStatus==='Sold'?'sold':'')+'">Status: '+escapeHtml(player.auctionStatus||'Not Started')+'</div></div></div>'}).join(''):'<p>No football players found.</p>'}
+    function loadSummary(){google.script.run.withSuccessHandler(renderSummary).withFailureHandler(showError).getAuctionSummary()}
+    function renderSummary(summary){const history=document.getElementById('historyList'),budgets=document.getElementById('budgetList');history.innerHTML=summary.soldPlayers.length?'<table class="dashboard-table"><thead><tr><th>Player</th><th>Position</th><th>Winning Team</th><th>Final Price</th></tr></thead><tbody>'+summary.soldPlayers.map(item=>'<tr><td>'+escapeHtml(item.name)+'</td><td>'+escapeHtml(item.position)+'</td><td>'+escapeHtml(item.winner)+'</td><td>'+escapeHtml(item.finalPrice)+'</td></tr>').join('')+'</tbody></table>':'<p>No sold players yet.</p>';budgets.innerHTML=summary.teams.length?'<table class="dashboard-table"><thead><tr><th>Team</th><th>Initial Budget</th><th>Spent</th><th>Remaining Purse</th><th>Utilization</th></tr></thead><tbody>'+summary.teams.map(team=>{const utilization=team.initialBudget?((team.spent/team.initialBudget)*100).toFixed(1)+'%':'0.0%';return '<tr><td><strong>'+escapeHtml(team.teamName)+'</strong></td><td>'+escapeHtml(team.initialBudget)+'</td><td>'+escapeHtml(team.spent)+'</td><td class="'+(team.remainingPurse<0?'negative':'positive')+'">'+escapeHtml(team.remainingPurse)+'</td><td>'+utilization+'</td></tr>'}).join('')+'</tbody></table>':'<p>No team budgets configured.</p>'}
+    function toggleHistory(){const panel=document.getElementById('historyPanel');panel.style.display=panel.style.display==='block'?'none':'block';if(panel.style.display==='block')loadSummary()}
+    function toggleBudgets(){const panel=document.getElementById('budgetPanel');panel.style.display=panel.style.display==='block'?'none':'block';if(panel.style.display==='block')loadSummary()}
+    function saveTeamBudget(){const name=document.getElementById('teamName').value,budget=document.getElementById('teamBudget').value;google.script.run.withSuccessHandler(summary=>{renderSummary(summary);document.getElementById('teamName').value='';document.getElementById('teamBudget').value='';showMessage('Team budget saved successfully.',true)}).withFailureHandler(showError).setTeamBudget(name,budget)}
+    function downloadAuctionHistory(){google.script.run.withSuccessHandler(csv=>{const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'}),url=URL.createObjectURL(blob),link=document.createElement('a');link.href=url;link.download='auction-history.csv';document.body.appendChild(link);link.click();link.remove();URL.revokeObjectURL(url);showMessage('Auction history CSV downloaded successfully.',true)}).withFailureHandler(showError).getAuctionHistoryCsv()}
+    function saveBasePrice(){const value=document.getElementById('basePrice').value;run('saveBasePrice',[currentPlayer.playerId,value],'Base price saved successfully.')}
+    function startAuction(){if(confirm('Start the auction for this player?'))run('startAuction',[currentPlayer.playerId],'Auction started. Verbal bidding in progress.')}
+    function closeAuctionManual(){
+      const price=document.getElementById('finalPrice').value;
+      const team=document.getElementById('teamNameInput').value;
+      if(!price||Number(price)<=0){showError({message:'Enter a valid final price.'});return;}
+      if(!team||!team.trim()){showError({message:'Enter the team name.'});return;}
+      if(!confirm('Confirm: '+currentPlayer.name+' sold to '+team+' for '+price+'?'))return;
+      google.script.run.withSuccessHandler(result=>{
+        players=result.players||[];
+        renderAllPlayers();
+        renderSummary(result.summary);
+        currentPlayer=players.find(p=>p.playerId===currentPlayer.playerId)||currentPlayer;
+        shownIds=shownIds.filter(id=>id!==currentPlayer.playerId);
+        nextRandomPlayer();
+        showMessage('Player sold to '+team+' for '+price+'.',true);
+      }).withFailureHandler(showError).closeAuctionManual(currentPlayer.playerId,price,team);
+    }
+    function resetCurrentAuction(){
+      if(!confirm('Reset this auction? Winner and spending will be removed, and the player will return to the auction pool.'))return;
+      google.script.run.withSuccessHandler(result=>{
+        players=result.players||[];
+        renderAllPlayers();
+        renderSummary(result.summary);
+        currentPlayer=players.find(p=>p.playerId===currentPlayer.playerId)||currentPlayer;
+        renderPlayer();
+        showMessage('Player returned to auction pool.',true);
+      }).withFailureHandler(showError).resetAuction(currentPlayer.playerId);
+    }
+    function run(functionName,args,success){google.script.run.withSuccessHandler(data=>{players=data||[];renderAllPlayers();loadSummary();currentPlayer=players.find(player=>player.playerId===currentPlayer.playerId)||currentPlayer;renderPlayer();showMessage(success,true)}).withFailureHandler(showError)[functionName](...args)}
+    function showMessage(text,success){const box=document.getElementById('message');box.textContent=text;box.className='message '+(success?'success-message':'error-message')}
+    function showError(error){showMessage(error.message||String(error),false)}
+    function escapeHtml(value){return String(value??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;')}
+  </script>
+</body>
+</html>
